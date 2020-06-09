@@ -95,10 +95,15 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                 // Clears the saved data for the given set in the current channel
                 case 'clear':
                     let fileName = getFilename(set, channelID);
+					let setName = getFilenameSet(set, channelID);
                     try {
                         fs.writeFile(fileName, "[]", (err) => {
                             if (err) Log('ERROR: ' + err);
                             Log("Successfully cleared file " + fileName + ".");
+                        });
+						fs.writeFile(setName, "[]", (err) => {
+                            if (err) Log('ERROR: ' + err);
+                            Log("Successfully cleared file " + setName + ".");
                         });
                         bot.sendMessage({
                             to: channelID,
