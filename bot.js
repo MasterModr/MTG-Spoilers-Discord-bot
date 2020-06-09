@@ -8,7 +8,6 @@ WATCHEDSETCODESPATH = WATCHEDSETCODESDIRECTORY + '/' + WATCHEDSETCODESFILENAME;
 SPOILERWATCHINTERVALTIME = 1000 * 30 * 60;
 
 // Initialize Discord Bot
-Log(auth);
 Log('Initializing bot...');
 var bot = new Discord.Client({
    token:  process.env.BOT_TOKEN,
