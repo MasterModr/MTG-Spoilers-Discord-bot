@@ -5,7 +5,7 @@ var fs = require("fs");
 WATCHEDSETCODESDIRECTORY = __dirname + '/data';
 WATCHEDSETCODESFILENAME = 'watchedsetcodes.json';
 WATCHEDSETCODESPATH = WATCHEDSETCODESDIRECTORY + '/' + WATCHEDSETCODESFILENAME;
-SPOILERWATCHINTERVALTIME = 1000 * 30 * 60;
+SPOILERWATCHINTERVALTIME = 1000 * 10 * 60;
 
 // Initialize Discord Bot
 Log('Initializing bot...');
@@ -28,7 +28,7 @@ bot.on('ready', function (evt) {
 bot.on('message', function (user, userID, channelID, message, evt) {
     // Our bot needs to know if it will execute a command
     // It will listen for messages that will start with `!`
-    if (message.substring(0, 1) == '!') {
+    if (message.substring(0, 1) == '!' && userID = '197918605239779328') {
         try {
             var args = message.substring(1).split(' ');
             var cmd = args[0];
