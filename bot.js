@@ -12,7 +12,7 @@ SPOILERWATCHINTERVALTIME = 1000 * 30 * 60;
 Log(auth);
 Log('Initializing bot...');
 var bot = new Discord.Client({
-   token: this.auth,
+   token: "9sgJaXrXbxZ_L9GSc3_gD4Tu6uAMVAiv",
    autorun: true
 });
 
