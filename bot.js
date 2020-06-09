@@ -31,7 +31,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
     // It will listen for messages that will start with `!`
     if (message.substring(0, 1) == '!') {
         try {
-            var args = message.substring(1).split('@');
+            var args = message.substring(1).split('!');
             var cmd = args[0];
 
             args = args.splice(1);
