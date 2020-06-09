@@ -1,5 +1,4 @@
 require('dotenv').config();
-
 var Discord = require('discord.io');
 var fs = require("fs");
 
