@@ -10,7 +10,7 @@ SPOILERWATCHINTERVALTIME = 1000 * 10 * 60;
 // Initialize Discord Bot
 Log('Initializing bot...');
 var bot = new Discord.Client({
-   token: process.env.BOT_TOKEN,
+   token: "NDgzMTQzNzY2OTU4NjY5ODI1.Xt_ubw.BfPKFHOyiaEg09G9HyLq5ROwpWk",
    autorun: true
 });
 
@@ -30,9 +30,9 @@ bot.on('message', function (user, userID, channelID, message, evt) {
     // It will listen for messages that will start with `!`
     if (message.substring(0, 1) == '!') {
         try {
-            var args = message.substring(1).split(' ');
+            var args = message.substring(1).split('@');
             var cmd = args[0];
-        
+
             args = args.splice(1);
             let set = args[0];
             switch(cmd.toLowerCase()) {
@@ -68,7 +68,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                     // Check if set is watched in the current channel
                     if (watchedSetcodes && watchedSetcodes.filter(function (watchedset) {
                         watchedset.setCode == set && watchedset.channelID == channelID
-                    })) 
+                    }))
                     {
                         Log('Stopping spoilerwatch for set ' + set + '.');
                         bot.sendMessage({
@@ -126,7 +126,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 });
 
 // Reconnect if the bot is disconnected
-bot.on('disconnect', function(errMsg, code) { 
+bot.on('disconnect', function(errMsg, code) {
     Log('ERROR code ' + code +': ' + errMsg);
     if (code === 1000) {
         bot.connect();
@@ -138,6 +138,34 @@ function getAllCards(set, channelID, verbose = false) {
     // Read which cards are already saved
     let fileName = getFilename(set, channelID);
     let savedCardlist = JSON.parse("[]");
+    let savedIDlist = JSON.parse("[]");
+    let setName = getFilenameSet(set, channelID);
+
+    fs.exists(setName, (exists) => {
+      if (!exists) {
+          // If data file doesn't exist yet, make an empty one
+          fs.writeFile(setName, "[]", (err) => {
+              if (err) Log('ERROR: ' + err);
+              Log("Successfully written to file " + setName + ".");
+          });
+      }
+      else{
+        try {
+            fs.readFile(setName, function(err, buf) {
+                if (err) Log("ERROR: " + err);
+                savedIDlist = JSON.parse(buf);
+                Log("Successfully read file " + setName + ".");
+            });
+        }
+        catch(error) {
+            Log("Something went wrong with parsing data from existing saved file.");
+            Log('ERROR: ' + error);
+            return;
+        }
+      }
+
+    });
+
     fs.exists(fileName, (exists) => {
         if (!exists) {
             // If data file doesn't exist yet, make an empty one
@@ -195,10 +223,18 @@ function getAllCards(set, channelID, verbose = false) {
                 // For every card: check if it's already save, otherwise at it to the new list
                 cardlist.data.forEach(function(card) {
                     cardId = card.oracle_id;
+                    collectorNumber = card.collector_number;
 
                     if (!savedCardlist.some(c => c == cardId)) {
                         newCardlist.push(card);
                         savedCardlist.push(cardId);
+                        savedIDlist.push(collectorNumber);
+                    }
+                    else{
+                      if (!savedIDlist.some(c => c == collectorNumber)) {
+                          newCardlist.push(card);
+                          savedIDlist.push(collectorNumber);
+                      }
                     }
                 });
 
@@ -233,8 +269,8 @@ function getAllCards(set, channelID, verbose = false) {
                             cardFlavourText = card.flavor_text;
 
                             // Construct the discord message
-                            var message = '**' + cardName + '** - ' + cardCost + '\n' 
-                            + cardType + ' (' + cardRarity + ')\n' 
+                            var message = '**' + cardName + '** - ' + cardCost + '\n'
+                            + cardType + ' (' + cardRarity + ')\n'
                             + cardText + '\n';
                             if (cardFlavourText != undefined) {
                                 message = message + '_' + cardFlavourText + '_\n';
@@ -256,6 +292,11 @@ function getAllCards(set, channelID, verbose = false) {
                         fs.writeFile(fileName, savedCardlistJSON, function(err) {
                             if (err) Log("ERROR: " + err);
                             Log('New card list has succesfully been saved!');
+                        });
+                        let savedIDlistJSON = JSON.stringify(savedIDlist);
+                        fs.writeFile(setName, savedIDlistJSON, function(err) {
+                            if (err) Log("ERROR: " + err);
+                            Log('New id list has succesfully been saved!');
                         });
                     }
                     catch(error) {
@@ -290,6 +331,11 @@ function getAllCards(set, channelID, verbose = false) {
 function getFilename(set, channelID) {
     return __dirname + '/data/' + channelID + '-' + set + '-data.json';
 }
+
+function getFilenameSet(set, channelID) {
+    return __dirname + '/data/' + channelID + '-' + set + '-numbers.json';
+}
+
 
 // Saves the array of watched sets and channel IDs to the data file
 function saveWatchedSets() {
@@ -353,16 +399,16 @@ function getDate() {
     var yyyy = today.getFullYear();
     if (dd < 10) {
     dd = '0' + dd;
-    } 
+    }
     if (mm < 10) {
     mm = '0' + mm;
-    } 
+    }
     if (h < 10) {
     h = '0' + h;
-    } 
+    }
     if (m < 10) {
     m = '0' + m;
-    } 
+    }
     var today = '[' + dd + '/' + mm + '/' + yyyy + ' ' + h + ':' + m + '] - ';
     return today;
 }

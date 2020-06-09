@@ -2,6 +2,7 @@
 data
 # File containing the client secret, not sure if this should be shared?
 auth.json
+*.env
 ### NODE
 # Logs
 logs
