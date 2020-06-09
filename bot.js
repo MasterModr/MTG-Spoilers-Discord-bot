@@ -1,5 +1,4 @@
 var Discord = require('discord.io');
-var auth = process.env.BOT_TOKEN;
 var fs = require("fs");
 
 //Constants
@@ -12,7 +11,7 @@ SPOILERWATCHINTERVALTIME = 1000 * 30 * 60;
 Log(auth);
 Log('Initializing bot...');
 var bot = new Discord.Client({
-   token: "9sgJaXrXbxZ_L9GSc3_gD4Tu6uAMVAiv",
+   token:  process.env.BOT_TOKEN,
    autorun: true
 });
 
