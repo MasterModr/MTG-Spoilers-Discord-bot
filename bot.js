@@ -285,7 +285,7 @@ function getAllCards(set, channelID, verbose = false) {
                                 message: message,
                             });
                         }
-                    }, 1000, newCardlist);
+                    }, 1500, newCardlist);
 
                     try {
                         // Save the updated list of saved cards to the datafile
