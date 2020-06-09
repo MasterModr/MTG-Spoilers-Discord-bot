@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 var Discord = require('discord.io');
 var fs = require("fs");
 
@@ -10,7 +12,7 @@ SPOILERWATCHINTERVALTIME = 1000 * 10 * 60;
 // Initialize Discord Bot
 Log('Initializing bot...');
 var bot = new Discord.Client({
-   token: "NDgzMTQzNzY2OTU4NjY5ODI1.Xt_ubw.BfPKFHOyiaEg09G9HyLq5ROwpWk",
+   token: process.env.BOT_TOKEN,
    autorun: true
 });
 
